@@ -1,8 +1,27 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Send, Phone} from 'lucide-react';
+import { Send, Phone } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Contact = () => {
+  const navigate = useNavigate();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+
+    fetch("/", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams(formData).toString(),
+    })
+      .then(() => {
+        // This moves the user to your new Success page
+        navigate("/success");
+      })
+      .catch((error) => alert("Form submission error: " + error));
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -30,7 +49,6 @@ const Contact = () => {
                 <p className="text-gray-900 font-medium">(555) 000-0000</p>
               </div>
             </div>
-            {/* Repeat for Email/Address */}
           </div>
         </div>
 
@@ -38,11 +56,10 @@ const Contact = () => {
         <div className="bg-white p-8 rounded-3xl shadow-xl border border-gray-100">
           <form
             name="contact"
-            method="POST"
+            onSubmit={handleSubmit}
             data-netlify="true"
             className="space-y-4"
           >
-            {/* HIDDEN INPUT: Required for Netlify + React */}
             <input type="hidden" name="form-name" value="contact" />
 
             <div>
